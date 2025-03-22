@@ -18,5 +18,5 @@ public class ProductVO {
     private String picture;       // 主图URL
     private String description;
     private Double price;
-
+    private Double storage;
 }

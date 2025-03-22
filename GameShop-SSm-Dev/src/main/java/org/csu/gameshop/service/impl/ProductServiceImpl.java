@@ -26,14 +26,16 @@ public class ProductServiceImpl implements ProductService {
         return productVO;
     }
 
-    @Override
-    public List<ProductVO> getProductList() {
-        return List.of();
-    }
+//    @Override
+//    public List<ProductVO> getProductList() {
+//        return List.of();
+//    }
 
     @Override
     public List<ProductVO> getAllProducts() {
         List<Product> products = productMapper.selectList(null);
+        System.out.println("Storage Data");
+        products.forEach(System.out::println);
         return convertToVOList(products);
     }
     private List<ProductVO> convertToVOList(List<Product> products) {
@@ -49,6 +51,4 @@ public class ProductServiceImpl implements ProductService {
         BeanUtils.copyProperties(product, vo);
         return vo;
     }
-
-
 }

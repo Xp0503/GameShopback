@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ProductService {
    public ProductVO getProductDetail(int productId);
-   public List<ProductVO> getProductList();
+//   public List<ProductVO> getProductList();
 
    List<ProductVO> getAllProducts();
 }
