@@ -34,8 +34,8 @@ public class ProductServiceImpl implements ProductService {
     @Override
     public List<ProductVO> getAllProducts() {
         List<Product> products = productMapper.selectList(null);
-        System.out.println("Storage Data");
-        products.forEach(System.out::println);
+//        System.out.println("Storage Data");
+//        products.forEach(System.out::println);
         return convertToVOList(products);
     }
     private List<ProductVO> convertToVOList(List<Product> products) {
