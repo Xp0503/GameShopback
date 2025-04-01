@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -198,7 +199,26 @@ public class ProductService {
         // 3. 批量删除数据库记录
         productMapper.deleteBatchIds(ids);
     }
+    // 新增评论方法
+    @Transactional
+    public void addComment(Integer productId,String content, Integer userId) {
+        // 验证商品存在
+        Product product = productMapper.selectById(productId);
+        if (product == null) {
+            throw new IllegalArgumentException("商品不存在");
+        }
 
+        // 构建评论对象
+        Comment comment = new Comment();
+        comment.setContent(content);
+        comment.setUser_id(userId);
+        comment.setProduct_id(productId);
+        comment.setCreate_time(LocalDateTime.now());
+        comment.setLike(0);
+
+        // 保存评论
+        commentMapper.insert(comment);
+    }
 }
 
 
