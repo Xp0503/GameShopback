@@ -1,7 +1,10 @@
 package org.csu.gameshopms.service;
 
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.micrometer.common.util.StringUtils;
+import org.csu.gameshopms.entity.Comment;
 import org.csu.gameshopms.entity.Product;
+import org.csu.gameshopms.mapper.CommentMapper;
 import org.csu.gameshopms.mapper.ProductMapper;
 import org.csu.gameshopms.vo.ProductVO;
 import org.springframework.beans.BeanUtils;
@@ -26,11 +29,18 @@ public class ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+    private CommentMapper commentMapper;
     @Value("${image.upload-dir}")
     private String uploadDir; // 从配置文件中注入路径
 
     public Product getProductDetail(int productId) {
-        return productMapper.selectById(productId);
+        Product product=productMapper.selectById(productId);
+        // 2. 获取关联评论
+        if (product != null) {
+            List<Comment> comments = commentMapper.selectByProductId(productId);
+            product.setComments(comments);
+        }
+        return product;
     }
 
     public List<Product> getProductList() {
@@ -159,7 +169,8 @@ public class ProductService {
         if (product == null) {
             throw new IllegalArgumentException("商品不存在");
         }
-
+        // 删除该商品的所有评论
+        commentMapper.deleteByProductId(id);
         // 2. 删除图片
         deleteOldImage(product.getPicture());
 
@@ -172,8 +183,14 @@ public class ProductService {
         // 1. 批量查询商品信息
         List<Product> products = productMapper.selectBatchIds(ids);
         if (products.isEmpty()) return;
+        // 新增：批量删除这些商品的所有评论
 
-        // 2. 删除所有关联图片
+            // 使用 QueryWrapper 构建删除条件
+            QueryWrapper<Comment> wrapper = new QueryWrapper<>();
+            wrapper.in("product_id", ids);
+
+            commentMapper.delete(wrapper);
+            // 2. 删除所有关联图片
         products.stream()
                 .map(Product::getPicture)
                 .forEach(this::deleteOldImage);
