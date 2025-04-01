@@ -2,7 +2,9 @@ package org.csu.gameshop.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import io.micrometer.common.util.StringUtils;
+import org.csu.gameshop.entity.Comment;
 import org.csu.gameshop.entity.Product;
+import org.csu.gameshop.persistence.CommentMapper;
 import org.csu.gameshop.persistence.ProductMapper;
 import org.csu.gameshop.service.ProductService;
 import org.csu.gameshop.vo.ProductVO;
@@ -26,12 +28,19 @@ public class ProductServiceImpl implements ProductService {
 
     @Autowired
     private ProductMapper productMapper;
+    private CommentMapper commentMapper;
     @Value("${image.upload-dir}")
     private String uploadDir; // 从配置文件中注入路径
 
     @Override
     public Product getProductDetail(int productId) {
         Product product = productMapper.selectById(productId);
+        // 2. 获取关联评论
+        if (product != null) {
+            List<Comment> comments = commentMapper.selectByProductId(productId);
+            product.setComments(comments);
+        }
+
         return product;
     }
 
