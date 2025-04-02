@@ -47,7 +47,7 @@ public class ProductController {
             }
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
-                    .body(null);yes
+                    .body(null);ye
         }
     }*/
    // 新增评论接口
