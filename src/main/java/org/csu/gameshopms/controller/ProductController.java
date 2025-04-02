@@ -48,7 +48,7 @@ public class ProductController {
         } catch (Exception e) {
             return ResponseEntity.internalServerError()
                     .body(null);
-        }
+        } 
     }*/
    // 新增评论接口
    @PostMapping(value = "/{productId}/comments",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
